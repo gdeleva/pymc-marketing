@@ -1688,19 +1688,73 @@ class MMM(RegressionModelBuilder):
         """Compute and save scaling factors for channels and target."""
         self.scalers = xr.Dataset()
 
-        channel_method = getattr(
-            self.xarray_dataset["_channel"],
-            self.scaling.channel.method,
-        )
-        self.scalers["_channel"] = channel_method(
-            dim=("date", *self.scaling.channel.dims)
+        # channel_method = getattr(
+        #    self.xarray_dataset["_channel"],
+        #    self.scaling.channel.method,
+        # )
+        self.scalers["_channel"] = xr.DataArray(
+            np.outer(
+                np.array(
+                    [
+                        14432385.4,
+                        16908271.4,
+                        11926474.8,
+                        13443464.599999998,
+                        12851426.000000002,
+                        7485993.8,
+                        12286088.399999999,
+                        10536988.2,
+                        19565790.4,
+                    ]
+                ),
+                np.array(
+                    [
+                        5.653304580427876e-06,
+                        6.959307036811918e-06,
+                        2.4987611191207125e-05,
+                        6.976076451358453e-05,
+                        5.9778382681840165e-05,
+                        5.355762234089567e-06,
+                        4.270670057312962e-06,
+                        7.718751745640051e-05,
+                        3.292979074683443e-05,
+                        6.691864389212528e-06,
+                        9.775089242294112e-06,
+                        3.21345734045374e-05,
+                        0.00010242895272696296,
+                        0.000436367103929869,
+                    ]
+                ),
+            ),
+            dims=["geo", "channel"],
         )
 
-        target_method = getattr(
-            self.xarray_dataset["_target"],
-            self.scaling.target.method,
+        # channel_method(
+        #    dim=("date", *self.scaling.channel.dims)
+        # )
+
+        # target_method = getattr(
+        #    self.xarray_dataset["_target"],
+        #    self.scaling.target.method,
+        # )
+        self.scalers["_target"] = xr.DataArray(
+            49.14262235644225
+            * np.array(
+                [
+                    14432385.4,
+                    16908271.4,
+                    11926474.8,
+                    13443464.599999998,
+                    12851426.000000002,
+                    7485993.8,
+                    12286088.399999999,
+                    10536988.2,
+                    19565790.4,
+                ]
+            ),
+            dims=["geo"],
         )
-        self.scalers["_target"] = target_method(dim=("date", *self.scaling.target.dims))
+        # target_method(dim=("date", *self.scaling.target.dims))
 
     def get_scales_as_xarray(self) -> dict[str, xr.DataArray]:
         """Return the saved scaling factors as xarray DataArrays.
